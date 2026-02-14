@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Be My Valentine 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #ff4e50, #f9d423);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .container, .secondPage, .finalPage {
+      color: white;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 50px;
+    }
+
+    /* First page buttons */
+    #yes, #no {
+      width: 160px;
+      height: 60px;
+      font-size: 20px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      position: absolute;
+      transition: transform 0.2s;
+    }
+
+    #yes { background: #28a745; color: white; top:75%; }
+    #no { background: #dc3545; color: white; top:75%; }
+
+    /* Second page buttons */
+    #yes2, #yes3 {
+      width: 160px;
+      height: 60px;
+      font-size: 20px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background: #28a745;
+      color: white;
+    }
+
+    .celebration img, .container img, .secondPage img {
+      max-width: 260px;
+      border-radius: 20px;
+      margin-top: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 24px;
+      animation: floatUp 4s linear infinite;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(100vh); opacity: 1; }
+      to { transform: translateY(-10vh); opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- First page -->
+  <div class="container" id="container">
+    <h1>Lail, will you be my Valentine? 💘</h1>
+    <button id="yes">YES 💖</button>
+    <button id="no">NO 💔</button>
+  </div>
+
+  <!-- Second page -->
+  <div class="secondPage" id="secondPage" style="display:none;">
+    <!-- Picture above text -->
+    <img src="secondphoto.jpg" alt="Cute Valentine">
+    <h1>Are you sure about that? 😏</h1>
+    <!-- Flex container for symmetric buttons -->
+    <div style="display:flex; justify-content:center; gap:40px; margin-top:50px; width:100%;">
+      <button id="yes2">YES 💖</button>
+      <button id="yes3">YES 💖</button>
+    </div>
+  </div>
+
+  <!-- Final love page -->
+  <div class="finalPage" id="finalPage" style="display:none;">
+    <h1>I LOVE YOU SO MUCH LILOOOO! 💕</h1>
+    <p>You are my one and only lover walahy ❤️🌹💖</p>
+    <img src="photo.jpg" alt="Our Photo">
+  </div>
+
+  <!-- Background Music -->
+  <audio id="music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    const container = document.getElementById("container");
+    const secondPage = document.getElementById("secondPage");
+    const finalPage = document.getElementById("finalPage");
+    const music = document.getElementById("music");
+
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const yes2Btn = document.getElementById("yes2");
+    const yes3Btn = document.getElementById("yes3");
+
+    let scale = 1;
+
+    // First page NO button moves far away
+    function moveNoButton() {
+      const maxX = window.innerWidth - 160;
+      const maxY = window.innerHeight - 60;
+      const x = Math.random() * maxX;
+      const y = 0.6*window.innerHeight + Math.random()*0.1*window.innerHeight; // lower part
+      scale -= 0.05;
+      if (scale < 0.4) scale = 0.4;
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      noBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+    noBtn.addEventListener("mouseover", moveNoButton);
+    noBtn.addEventListener("touchstart", moveNoButton);
+
+    // First YES -> second page
+    yesBtn.addEventListener("click", () => {
+      container.style.display = "none";
+      secondPage.style.display = "flex";
+    });
+
+    // Second page YES buttons -> final page with extra effects
+    function goFinal() {
+      secondPage.style.display = "none";
+      finalPage.style.display = "flex";
+
+      music.play();
+      if(navigator.vibrate) navigator.vibrate([200,100,200]);
+
+      // Multiple confetti bursts
+      for(let i=0;i<5;i++){
+        confetti({
+          particleCount: 100,
+          spread: 150,
+          origin: { y: Math.random() * 0.6 },
+          colors: ['#ff4e50','#f9d423','#ff66cc','#ff99ff','#ffcc00']
+        });
+      }
+
+      // Floating hearts of various sizes/colors
+      setInterval(createHeart, 200);
+    }
+    yes2Btn.addEventListener("click", goFinal);
+    yes3Btn.addEventListener("click", goFinal);
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      const hearts = ["💖","❤️","💕","💘","💝"];
+      heart.innerHTML = hearts[Math.floor(Math.random()*hearts.length)];
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.fontSize = (20 + Math.random()*40) + "px";
+      heart.style.color = ["pink","red","#ff66cc","#ff99ff","#ffcc00"][Math.floor(Math.random()*5)];
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(),5000);
+    }
+
+    // Disable back button
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () { history.go(1); }
+
+  </script>
+
+</body>
+</html>
